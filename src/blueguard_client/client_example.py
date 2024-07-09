@@ -1,3 +1,6 @@
+# Example illustration using the blueguard client to access the blueguard privacy APIs
+# To be able run this client from command-line
+# `cd src` and run `python -m blueguard_client.client_example`
 import os, json
 from .blueguard_client import BlueGuardAPIClient, Mode
 
