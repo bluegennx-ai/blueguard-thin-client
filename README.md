@@ -17,7 +17,7 @@ To install the BlueGuard SDK, you can use pip:
 pip install blueguard_client
 ```
 
-Or, if you're installing from the source (recommended as this is not published in pypi yet):
+Or, if you're installing from the source:
 
 ```bash
 git clone https://github.com/bluegennx-ai/blueguard-thin-client.git
