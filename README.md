@@ -25,6 +25,7 @@ cd blueguard-thin-client
 
 python3 -m venv venv
 source venv/bin/activate
+
 pip install -e .
 ```
 
@@ -86,6 +87,7 @@ Alternatively, you can automatically run all tests from the Testing window in Vi
 The Blueguard client requires a scheme, host, and optional port to initialize. 
 Alternatively, a full url can be used. The APIs are authorized by adding an API key
 and org_uuid while initializing the client.
+
 Once created, the connection can be tested with the client's `health` function
 
 ```python
