@@ -22,6 +22,10 @@ Or, if you're installing from the source (recommended as this is not published i
 ```bash
 git clone https://github.com/bluegennx-ai/blueguard-thin-client.git
 cd blueguard-thin-client
+
+python3 -m venv venv
+source venv/bin/activate
+
 pip install -e .
 ```
 
@@ -63,7 +67,7 @@ Output:
 ['Hi [PERSON], how are you']
 ```
 
-### Running the tests <a name=testing></a> [Work In Progress]
+### Running the tests <a name=testing></a>
 
 We use [pytest](https://docs.pytest.org/) to run our tests in the tests folder.
 
@@ -81,7 +85,9 @@ Alternatively, you can automatically run all tests from the Testing window in Vi
 #### Initializing the Client
 
 The Blueguard client requires a scheme, host, and optional port to initialize. 
-Alternatively, a full url can be used.
+Alternatively, a full url can be used. The APIs are authorized by adding an API key
+and org_uuid while initializing the client.
+
 Once created, the connection can be tested with the client's `health` function
 
 ```python
@@ -105,26 +111,6 @@ Output:
 
 ```
 True
-True
-```
-
-#### Adding Authorization to the Client [Work In Progress]
-
-```python
-from blueguard_client import BlueGuardAPIClient
-# On initialization
-client = BlueGuardAPIClient(url="http://localhost:8080", api_key='testkey')
-
-# After initialization
-client = BlueGuardAPIClient(url="http://localhost:8080")
-client.health()
-client.add_api_key("testkey")
-client.health()
-```
-Output:
-
-```
-The request returned with a 401 Unauthorized
 True
 ```
 
