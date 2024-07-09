@@ -137,7 +137,7 @@ Redact: Enables replacement with appropriate entity types detected for the value
 
 ```python
 sample_text = ['Hi Sam, how are you', 'I live in Chennai']
-response = bgx_client.process_text(Mode.REDACT, text_inputs=sample_text, api_key=api_key, org_uuid=org_uuid)
+response = bgx_client.process_text(Mode.REDACT, text_inputs=sample_text)
 print(response.processed_text, response.context_id)
 ```
 
@@ -153,7 +153,7 @@ Replace: Replace mode replaces detected entity values in the input text with rea
 
 ```python
 sample_text = ['Hi Sam, how are you', 'I live in Chennai']
-response = bgx_client.process_text(Mode.REPLACE, text_inputs=sample_text, api_key=api_key, org_uuid=org_uuid)
+response = bgx_client.process_text(Mode.REPLACE, text_inputs=sample_text)
 print(response.processed_text, response.context_id)
 ```
 
@@ -169,7 +169,7 @@ Mask text: Enables replacing detected entities text ###### characters in their p
 
 ```python
 sample_text = ['Hi Sam, how are you', 'I live in Chennai']
-response = bgx_client.process_text(Mode.MASK, text_inputs=sample_text, api_key=api_key, org_uuid=org_uuid)
+response = bgx_client.process_text(Mode.MASK, text_inputs=sample_text)
 print(response.processed_text, response.context_id)
 ```
 
@@ -187,16 +187,14 @@ See example below.
 
 ```python
 sample_text = ["Hi Ram, I lost my cc card in Chennai", "I love Sathya"]
-response = bgx_client.process_text(Mode.REDACT, text_inputs=sample_text, api_key=api_key, org_uuid=org_uuid)
+response = bgx_client.process_text(Mode.REDACT, text_inputs=sample_text)
 processed_text = response.processed_text
 context_id = response.context_id 
 
 # Let us recall the original text by calling reidentify_text with the previously processed (redacted/masked/replaced) text
 original_text_reidentified = bgx_client.reidentify_text(text_inputs= processed_text
-                                                        , api_key=api_key
-                                                        , extra_objects = {'org_uuid': org_uuid
-                                                        , 'context_id': context_id[0]
-                                                        , "enable_details": True}) # context_id that was originally passed to the original de-identification
+                                                        , context_id = context_id[0]
+                                                        , enable_details = True) # context_id that was originally passed to the original de-identification
 print(f"Original Text RE-Identified: {original_text_reidentified.original_text[0]}")
 ```
 
@@ -215,8 +213,6 @@ their positions in the original and the processed text.
 ```python
 sample_text = ["Hi Ram"]
 response = client.process_text(Mode.REDACT, text_inputs=sample_text
-                                                    , api_key = api_key # your Org's API Key to access Blueguard Privacy API
-                                                    , org_uuid=org_uuid # unique id for your organization
                                                     , enable_details = True # If True, each entity detected, it's position with start & end index etc is included. If False (default), then processed_text is output without details
                                                     , enable_sensitive_scan = False # If True, custom terms are scanned. None, otherwise.
                                                     , identify_credentials = False) # If True, Multiple Keys/Credentials such as AWS, SSH, RSA, Azure, Google's keys are detected.
@@ -251,5 +247,6 @@ Redacted Text With Details: ['Hi [PERSON]'],
 ] 
 ```
 
+[Refer to the executable client Example](https://github.com/bluegennx-ai/blueguard-thin-client/blob/main/src/blueguard_client/client_example.py)
 
 [1]: https://docs.bluegennx.ai/

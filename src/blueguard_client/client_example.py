@@ -1,5 +1,8 @@
+# Example illustration using the blueguard client to access the blueguard privacy APIs
+# To be able run this client from command-line
+# `cd src` and run `python -m blueguard_client.client_example`
 import os, json
-from .blueguard_client import BlueGuardAPIClient, Mode
+from blueguard_client import BlueGuardAPIClient, Mode
 
 # Load the API_KEY variable
 api_key = os.getenv('BLUEGUARD_API_KEY')
@@ -7,7 +10,7 @@ org_uuid = os.getenv('ORG_UUID')
 
 # Initialize Blueguard API Client with URL
 BLUEGUARD_SCHEME = "https"
-BLUEGUARD_HOST = "api.blueguard.bluegennx.ai"
+BLUEGUARD_HOST = "localhost"
 BLUEGUARD_URL = BLUEGUARD_SCHEME + "://" + BLUEGUARD_HOST
 
 bgx_client = BlueGuardAPIClient(url = BLUEGUARD_URL, api_key=api_key, org_uuid=org_uuid)
