@@ -5,3 +5,4 @@ from .blueguard_response import (
     ReIdentifyTextResponse
 )
 from .blueguard_uris import BlueguardURIs
+from .modes import Mode  # Import Mode from modes

@@ -34,7 +34,7 @@ async def async_aiohttp_call() -> None:
         ORG_UUID = os.environ["ORG_UUID"]
         # create an asynchronous aiohttp post call, done outside the blueguard client to use aiohttp
         async with session.post(
-            url="https://api.blueguard.bluegennx.ai/api/process/text/deid/",
+            url="https://localhost:80/api/process/text/deid/",
             headers={"api_key": "Bearer " + os.environ["API_KEY"]},
             json={
                 "mode": "replace",
@@ -66,7 +66,7 @@ async def async_requests_call() -> None:
     ORG_UUID = os.environ["ORG_UUID"]
 
     response = await async_post(
-        url="https://api.blueguard.bluegennx.ai/api/process/text/deid/",
+        url="https://localhost:80/api/process/text/deid/",
         headers = {"api_key": "Bearer " + os.environ["API_KEY"]},
         json = {
             "mode": "redact",
