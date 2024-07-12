@@ -41,6 +41,10 @@ class BlueguardURIs:
     def reidentify_text(self):
         return self._create_uri(self.uri, "api", "process", "text", "reid")
     
+    @property
+    def confidential_terms(self):
+        return self._create_uri(self.uri, "api", "process", "knowledgebase", "keywords")
+    
     
     
                 

@@ -18,7 +18,7 @@ class ClientRequests:
         return dict(Accept="application/json", api_key=f"Bearer {API_KEY}") 
     
 
-    def make_request_external(self, request_type: Union[requests.get, requests.post], uri: str, api_key: Optional[str] = None, payload: dict = None):
+    def make_request_external(self, request_type: Union[requests.get, requests.post, requests.put], uri: str, api_key: Optional[str] = None, payload: dict = None):
         if api_key:
             self.api_key = api_key
             response = request_type(uri, json=payload, headers=self.external_header(API_KEY=api_key))
@@ -53,5 +53,14 @@ class ClientPostRequests(ClientRequests):
     
     def reidentify_text(self, request_object, api_key):
         return self.make_request_external(self.request_type, self.uris.reidentify_text, api_key, request_object)
+    
+class ClientPutRequests(ClientRequests):
+    def __init__(self, uris: ClientRequests):
+        self.request_type = requests.put
+        super(ClientPutRequests, self).__init__(uris)
+        
+    def add_confidential_terms(self, request_object, api_key):
+        return self.make_request_external(self.request_type, self.uris.confidential_terms, api_key, request_object)
+    
 
         

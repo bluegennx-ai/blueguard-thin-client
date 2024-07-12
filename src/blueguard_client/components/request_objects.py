@@ -75,4 +75,22 @@ class ReidentifyRequestObjects(ClientBaseRequest):
             enable_details=self.enable_details
         )
         return base_request_object
+    
+class ConfidentialTermsRequestObjects(ClientBaseRequest):
+    def  __init__(self, add_params: dict):
+        super(ConfidentialTermsRequestObjects, self).__init__(mode=None, inputs=None, extra_objects=add_params)
+        self.keywords = add_params.get("keywords", [])
+        self.org_uuid = add_params.get("org_uuid")
+        if self._is_keywords_empty():
+            raise ValueError("keywords can't be empty.")
+      
+    def _is_keywords_empty(self):
+        return self.keywords == []
+
+    def to_dict(self) -> dict:
+        base_request_object = dict(
+            org_uuid=self.org_uuid,
+            keywords=self.keywords
+        )
+        return base_request_object
 
