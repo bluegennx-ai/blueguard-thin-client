@@ -10,8 +10,11 @@ class BlueGuardAPIClient:
         self._uris = BlueguardURIs(scheme=scheme, host=host, port=port, url=url)
         self.get = ClientGetRequests(self._uris)
         self.post = ClientPostRequests(self._uris)
+        self.put = ClientPutRequests(self._uris)
         self.api_key = kwargs.get("api_key")
         self.org_uuid = kwargs.get("org_uuid")
+        if self.api_key is None or self.org_uuid is None:
+            raise ValueError("Client must be intiialized with BLUEGUARD_API_KEY & ORG_UUID")
 
     def get_version(self):
         version = VersionResponse(self.get.version(api_key=self.api_key))
@@ -40,10 +43,14 @@ class BlueGuardAPIClient:
             extra_objects["lang"] = kwargs["lang"]
         if "context_id" in kwargs:
             extra_objects["context_id"] = kwargs["context_id"]
+        if "keywords" in kwargs:
+            extra_objects["keywords"] = kwargs["keywords"]
         extra_objects["org_uuid"] = self.org_uuid
         return extra_objects
     
     def process_text(self, mode: Mode, text_inputs: list, **add_params):
+        if not isinstance(text_inputs, list):
+            raise TypeError("text_inputs must be a list")
         extra_objects = self.form_extra_objects_from_kwargs(**add_params)
         if mode == Mode.REDACT:
             objects = RedactRequestObjects(inputs=text_inputs, add_params=extra_objects)
@@ -61,6 +68,15 @@ class BlueGuardAPIClient:
         extra_objects = self.form_extra_objects_from_kwargs(**add_params)
         objects = ReidentifyRequestObjects(inputs=text_inputs, add_params=extra_objects)
         response = ReIdentifyTextResponse(self.post.reidentify_text(request_object=objects.to_dict(), api_key=self.api_key))
+        if response._details:
+            raise ValueError(f"{response._details}")
+        if response._output_response:
+            return response
+        
+    def add_or_update_confidential_terms(self, **add_params):
+        extra_objects = self.form_extra_objects_from_kwargs(**add_params)
+        objects = ConfidentialTermsRequestObjects(add_params=extra_objects)
+        response = ConfidentialTermsResponse(self.put.add_confidential_terms(request_object=objects.to_dict(), api_key=self.api_key))
         if response._details:
             raise ValueError(f"{response._details}")
         if response._output_response:

@@ -8,7 +8,7 @@ class BaseResponse:
         if not self.ok:
             message = (f"This request has returned a {self.status_code} for {self.reason}.")
             if self.status_code == 402:
-                message += f"request body -- {self.json_response}"
+                message += f" request body -- {self.json_response}"
             raise HTTPError(message)
         
     def __call__(self):
@@ -35,19 +35,21 @@ class BaseResponse:
         
     @json_response.setter
     def json_response(self, new_response):
-        if type(new_response) is not Response:
+        if not isinstance(new_response, Response):
             raise ValueError("response must be a Response object.")
         self._response = new_response
 
     def get_attribute_by_entries(self, name):
         if not self._json_response:
-            raise ValueError("get_attribute_entries needs a response of type json")
+            raise ValueError("get_attribute_by_entries needs a response of type JSON")
         body = self.json_response
-        if type(body) is list:
-            return [row.get(name) for row in self().json()]
-        elif type(body) is dict:
+        if isinstance(body, list):
+            return [row.get(name) for row in body]
+        elif isinstance(body, dict):
             return body.get(name)
-        
+        else:
+            raise ValueError("Invalid JSON response type")
+
 class VersionResponse(BaseResponse):
     def __init__(self, response_object: Response = None):
         super(VersionResponse, self).__init__(response_object, json_response=True)
@@ -55,14 +57,14 @@ class VersionResponse(BaseResponse):
     @property
     def get_version_details(self):
         return self.get_attribute_by_entries("version")
-    
+
 class MetricsResponse(BaseResponse):
     def __init__(self, response_object: Response = None):
         super(MetricsResponse, self).__init__(response_object, json_response=True)
         
 class ProcessTextResponse(BaseResponse):
-    def __init__(self, response_object: Response = None):
-        super(ProcessTextResponse, self).__init__(response_object, json_response=True)
+    def __init__(self, response_object: Response, json_response: bool = True):
+        super(ProcessTextResponse, self).__init__(response_object, json_response)
         self._output_response = self.get_attribute_by_entries('output')
         self._details = self.get_attribute_by_entries('detail')
         
@@ -114,7 +116,7 @@ class ProcessTextResponse(BaseResponse):
 
         return result
 
-    def to_dict(self) -> dict[str, any]:
+    def to_dict(self) -> dict:
         result = self.extract_detailed_info()
         return result
 
@@ -166,15 +168,16 @@ class ProcessTextResponse(BaseResponse):
     def detailed_info(self):
         return self.get_results_by_fields("detailed_info")
     
-    
+
 class ReIdentifyTextResponse(ProcessTextResponse):
-    def __init__(self, response_object: Response = None):
-        super(ProcessTextResponse, self).__init__(response_object, json_response=True)
+    def __init__(self, response_object: Response):
+        super(ReIdentifyTextResponse, self).__init__(response_object, json_response=True)
         self._output_response = self.get_attribute_by_entries('output')
         self._details = self.get_attribute_by_entries('details')
 
-        
-        
-                
-        
-        
+class ConfidentialTermsResponse(ProcessTextResponse):
+    def __init__(self, response_object: Response):
+        super(ConfidentialTermsResponse, self).__init__(response_object, json_response=True)
+        self._status = self.get_attribute_by_entries('status')
+        self._output_response = self.get_attribute_by_entries('output')
+        self._details = self.get_attribute_by_entries('details')
